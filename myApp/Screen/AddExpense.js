@@ -25,6 +25,7 @@ const AddExpense = ({navigation}) => {
                 <View style={styles.amountStyle}>
                     <TextInput 
                         style={{fontSize: 18,}}
+                        keyboardType='number-pad'
                         placeholder='Enter Your Amount'
                     />
                 </View>
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
     },
     titleStyle: {
         width: '100%',
-        height: '9%',
+        minHeight: '10%',
         borderRadius: 30,
         justifyContent: 'center',
         paddingLeft: 10,
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
     },
     amountStyle: {
         width: '100%',
-        height: '8%',
+        minHeight: '9%',
         marginTop: 10,
         borderRadius: 30,
         justifyContent: 'center',

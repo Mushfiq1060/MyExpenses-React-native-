@@ -9,7 +9,7 @@ const Card = ({onPress, title, date, amount}) => {
             <View style={styles.contentStyle}>
                 <View style={styles.textStyle}>
                     <View style={styles.titleStyle}>
-                        <Text style={{paddingLeft: 10, fontSize: 40}}>{title}</Text>
+                        <Text style={{paddingLeft: 10, fontSize: 30}}>{title}</Text>
                     </View>
                     <View style={styles.dateStyle}>
                         <Text style={{paddingLeft: 10, fontSize: 10}}>Saved On: {date}</Text>
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     cardStyle: {
         flex: 1,
         width: Dimensions.get('window').width-20,
-        height: Dimensions.get('screen').height/6.5,
+        height: 120,
         marginTop: 5,
         marginBottom: 5,
         borderRadius: 30,

@@ -3,81 +3,87 @@ import { View, Text, StyleSheet, ActivityIndicator, FlatList } from 'react-nativ
 import React, { useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
+import moment from 'moment'; // import this for get current time. For more about moment https://aboutreact.com/react-native-get-current-date-time/ 
+ 
 
 import Card from './Card';
 
 
 const Pending = ({navigation}) => {
+    
+    let date = moment()
+                .utcOffset('+06:00') //get your time zone
+                .format('MM-DD-YYYY hh:mm a'); // for format time
 
     const [data, setData] = useState(
         [
             {
                 id: "1",
                 title: "One",
-                date: "27 Aug 2022",
+                date: date,
                 description: "It is description one",
                 amount: "1000"
             },
             {
                 id: "2",
                 title: "Two",
-                date: "27 Aug 2022",
+                date: date,
                 description: "It is description two",
                 amount: "1000"
             },
             {
                 id: "3",
                 title: "Three",
-                date: "27 Aug 2022",
+                date: date,
                 description: "It is description three",
                 amount: "1000"
             },
             {
                 id: "4",
                 title: "Four",
-                date: "27 Aug 2022",
+                date: date,
                 description: "It is description four",
                 amount: "1000"
             },
             {
                 id: "5",
                 title: "Five",
-                date: "27 Aug 2022",
+                date: date,
                 description: "It is description five",
                 amount: "1000"
             },
             {
                 id: "6",
                 title: "Six",
-                date: "27 Aug 2022",
+                date: date,
                 description: "It is description six",
                 amount: "1000"
             },
             {
                 id: "7",
                 title: "Seven",
-                date: "27 Aug 2022",
+                date: date,
                 description: "It is description seven",
                 amount: "1000"
             },
             {
                 id: "8",
                 title: "Eight",
-                date: "27 Aug 2022",
+                date: date,
                 description: "It is description eight",
                 amount: "1000"
             },
             {
                 id: "9",
                 title: "Nine",
-                date: "27 Aug 2022",
+                date: date,
                 description: "It is description nine",
                 amount: "1000"
             },
             {
                 id: "10",
                 title: "Ten",
-                date: "27 Aug 2022",
+                date: date,
                 description: "It is description ten",
                 amount: "1000"
             },
@@ -125,7 +131,12 @@ function ListItem({navigation, title, date, description, amount}) {
     return (
         <Card 
             navigation={navigation} 
-            onPress={() => {navigation.navigate('Pending Details')}}
+            onPress={() => {navigation.navigate('Pending Details', {
+                                                    title: `${title}`, 
+                                                    date: `${date}`, 
+                                                    description: `${description}`,
+                                                    amount: `${amount}`
+                                                })}}
             title={title}
             date={date}
             amount={amount}

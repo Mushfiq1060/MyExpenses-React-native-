@@ -3,8 +3,6 @@ import { View, Text, StatusBar, StyleSheet, TextInput } from 'react-native'
 import React from 'react'
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable'
 
-/*React Native Project */
-
 const AddExpense = ({navigation}) => {
     return (
         <View style={styles.pageStyle}>
@@ -39,7 +37,6 @@ const AddExpense = ({navigation}) => {
         </View>
     )
 }
-
 
 const styles = StyleSheet.create({
     
@@ -97,7 +94,6 @@ const styles = StyleSheet.create({
         paddingRight: 10,
         borderWidth: 2,
     }
-
 })
 
 export default AddExpense

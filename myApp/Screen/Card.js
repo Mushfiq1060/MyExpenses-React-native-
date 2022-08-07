@@ -1,18 +1,20 @@
 
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
 import React from 'react'
-import Pressable from 'react-native/Libraries/Components/Pressable/Pressable'
 
-const Card = ({onPress, title, date, amount}) => {
+
+const Card = ({onPress, title, date, amount, name}) => {
+    let width = Dimensions.get('window').width
     return (
-        <TouchableOpacity onPress={onPress} style={styles.cardStyle}>
+        <TouchableOpacity onPress={onPress} style={[styles.cardStyle,{width: name=="Pending"?width-20:width-20}]}>
             <View style={styles.contentStyle}>
                 <View style={styles.textStyle}>
                     <View style={styles.titleStyle}>
                         <Text style={{paddingLeft: 10, fontSize: 30}}>{title}</Text>
                     </View>
                     <View style={styles.dateStyle}>
-                        <Text style={{paddingLeft: 10, fontSize: 10}}>Saved On: {date}</Text>
+                        {name=="Pending" ? <Text style={{paddingLeft: 10, fontSize: 10}}>Saved On: {date}</Text> : 
+                                           <Text style={{paddingLeft: 10, fontSize: 10}}>Paid On: {date}</Text>}
                     </View>
                 </View>
                 <View style={styles.amountStyle}>
@@ -26,7 +28,6 @@ const Card = ({onPress, title, date, amount}) => {
 const styles = StyleSheet.create({
     cardStyle: {
         flex: 1,
-        width: Dimensions.get('window').width-20,
         height: 120,
         marginTop: 5,
         marginBottom: 5,

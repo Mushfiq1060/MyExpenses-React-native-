@@ -100,7 +100,7 @@ const Pending = ({navigation}) => {
 
     return (
         <View style={styles.pageStyle}>
-            <View>
+            <View style={{marginTop: 5}}>
                 {isLoading ? <ActivityIndicator size='large' /> : (
                     <FlatList 
                         keyExtractor={item => item.id}
@@ -140,6 +140,7 @@ function ListItem({navigation, title, date, description, amount}) {
             title={title}
             date={date}
             amount={amount}
+            name="Pending"
         />
     )
 }

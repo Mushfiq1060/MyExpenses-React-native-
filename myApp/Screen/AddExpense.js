@@ -37,7 +37,8 @@ const AddExpense = ({navigation}) => {
                 </View>
                 <RadioButtonRN
                     style={{width: '50%'}}
-                    boxStyle={{borderWidth: 0}}
+                    boxStyle={{borderWidth: 2, borderRadius: 30}}
+                    activeColor='#000'
                     data={[{label: 'Recurrent'},{label: 'Random'}]}
                     initial={1}
                     selectedBtn={(e) => setType(e)}
@@ -61,14 +62,13 @@ const styles = StyleSheet.create({
     pageStyle: {
         paddingTop: StatusBar.currentHeight, 
         flex: 1, 
-        margin: 10
+        margin: 10,
     },
     informationStyle: {
         width: '100%',
         height: '94%',
         position: 'absolute',
         top: 0,
-        justifyContent: 'center',
         alignItems: 'center'
     },
     btnStyle: {

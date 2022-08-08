@@ -1,9 +1,17 @@
 
 import { View, Text, StatusBar, StyleSheet, TextInput } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
+import RadioButtonRN from 'radio-buttons-react-native'  
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable'
+import { FontAwesome } from '@expo/vector-icons';
 
 const AddExpense = ({navigation}) => {
+
+    const [title, setTitle] = useState('')
+    const [description, setDescription] = useState('')
+    const [amount, setAmount] = useState('')
+    const [type, setType] = useState('Recurrent')
+
     return (
         <View style={styles.pageStyle}>
             <View style={styles.informationStyle}>
@@ -27,6 +35,16 @@ const AddExpense = ({navigation}) => {
                         placeholder='Enter Your Amount'
                     />
                 </View>
+                <RadioButtonRN
+                    style={{width: '50%'}}
+                    boxStyle={{borderWidth: 0}}
+                    data={[{label: 'Recurrent'},{label: 'Random'}]}
+                    initial={1}
+                    selectedBtn={(e) => setType(e)}
+                    icon={
+                        <FontAwesome name="check-circle-o" size={24} color="tomato" />
+                    }
+                />
             </View>
             <Pressable 
                 style={styles.btnStyle}
@@ -50,6 +68,8 @@ const styles = StyleSheet.create({
         height: '94%',
         position: 'absolute',
         top: 0,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     btnStyle: {
         width: '100%',

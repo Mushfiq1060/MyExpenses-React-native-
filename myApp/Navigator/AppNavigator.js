@@ -5,18 +5,14 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
-
 import Pending from '../Screen/Pending'
 import Expense from '../Screen/Expense'
 import PendingDetails from '../Screen/PendingDetails'
 import AddExpense from '../Screen/AddExpense'
 import ExpenseDetails from '../Screen/ExpenseDetails'
 
-
-
 const Tab = createMaterialTopTabNavigator()
 const Stack = createNativeStackNavigator()
-
 
 const TabStack = () => {
     return (
@@ -37,7 +33,6 @@ const TabStack = () => {
 const AppNavigator = () => {
     return (
         <Stack.Navigator>
-
             <Stack.Screen 
                 options={{
                     headerShown: false
@@ -48,9 +43,7 @@ const AppNavigator = () => {
             <Stack.Screen name='Add Expense' component={AddExpense} />
             <Stack.Screen name='Pending Details' component={PendingDetails} />
             <Stack.Screen name='Expense Details' component={ExpenseDetails} />
-
         </Stack.Navigator>
     )
 }
-
 export default AppNavigator

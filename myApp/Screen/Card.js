@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         borderWidth: 2,
         overflow: 'hidden',
+        elevation: 6,
     },
     contentStyle: {
         flex: 1,

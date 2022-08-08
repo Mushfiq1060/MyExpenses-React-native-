@@ -36,8 +36,8 @@ const AddExpense = ({navigation}) => {
                     />
                 </View>
                 <RadioButtonRN
-                    style={{width: '50%'}}
-                    boxStyle={{borderWidth: 2, borderRadius: 30}}
+                    style={{width: '100%', flexDirection: 'row'}}
+                    boxStyle={{width: '50%', borderWidth: 2, borderRadius: 30}}
                     activeColor='#000'
                     data={[{label: 'Recurrent'},{label: 'Random'}]}
                     initial={1}

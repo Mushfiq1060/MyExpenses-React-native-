@@ -4,99 +4,45 @@ import React, { useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import moment from 'moment';
 
-
 import Card from './Card';
+import {DatabaseConnection} from '../Database/DatabaseConnection'
+
+const db = DatabaseConnection.getPendingConnection()
 
 const Expense = ({navigation}) => {
 
-
-    let date = moment()
-                .utcOffset('+06:00') //get your time zone
-                .format('MM-DD-YYYY hh:mm a'); // for format time
-
-    const [data, setData] = useState(
-        [
-            {
-                id: "1",
-                title: "One",
-                date: date,
-                description: "It is description one",
-                amount: "1000"
-            },
-            {
-                id: "2",
-                title: "Two",
-                date: date,
-                description: "It is description two",
-                amount: "1000"
-            },
-            {
-                id: "3",
-                title: "Three",
-                date: date,
-                description: "It is description three",
-                amount: "1000"
-            },
-            {
-                id: "4",
-                title: "Four",
-                date: date,
-                description: "It is description four",
-                amount: "1000"
-            },
-            {
-                id: "5",
-                title: "Five",
-                date: date,
-                description: "It is description five",
-                amount: "1000"
-            },
-            {
-                id: "6",
-                title: "Six",
-                date: date,
-                description: "It is description six",
-                amount: "1000"
-            },
-            {
-                id: "7",
-                title: "Seven",
-                date: date,
-                description: "It is description seven",
-                amount: "1000"
-            },
-            {
-                id: "8",
-                title: "Eight",
-                date: date,
-                description: "It is description eight",
-                amount: "1000"
-            },
-            {
-                id: "9",
-                title: "Nine",
-                date: date,
-                description: "It is description nine",
-                amount: "1000"
-            },
-            {
-                id: "10",
-                title: "Ten",
-                date: date,
-                description: "It is description ten",
-                amount: "1000"
-            },
-        ]
-    )
-
+    const [data, setData] = useState([])
     const [isLoading, setLoading] = useState(true)
 
     useEffect(() => {
-        // Here fetch data from database
-        setTimeout(() => {
-            setLoading(false)
-        },2000)
-    })
+        db.transaction((tx) => {
+            tx.executeSql(
+                `SELECT * FROM expenseTable`,
+                [],
+                (tx, result) => {
+                    var temp = []
+                    for(let i = 0; i < result.rows.length; i++) {
+
+                        let obj={
+                            id: result.rows.item(i).id,
+                            title: result.rows.item(i).title,
+                            description: result.rows.item(i).description,
+                            amount: result.rows.item(i).amount,
+                            type: result.rows.item(i).type,
+                            date: result.rows.item(i).date
+                        }
+                        temp.push(obj)
+                    }
+                    setData(temp)
+                    if(result.rows.length > 0) {
+                        setLoading(false)
+                    } else {
+                        setLoading(true)
+                    }
+                }
+            )
+        })
+    },[data])
 
     return (
         <View style={styles.pageStyle}>
@@ -120,6 +66,7 @@ const Expense = ({navigation}) => {
                                         date={item.date} 
                                         description={item.description} 
                                         amount={item.amount}
+                                        type={item.type}
                                     />}
                     />
                 )}
@@ -129,7 +76,7 @@ const Expense = ({navigation}) => {
 }
 
 
-function ListItem({navigation, title, date, description, amount}) {
+function ListItem({navigation, title, date, description, amount, type}) {
     return (
         <Card 
             navigation={navigation} 
@@ -137,7 +84,8 @@ function ListItem({navigation, title, date, description, amount}) {
                                                     title: `${title}`, 
                                                     date: `${date}`, 
                                                     description: `${description}`,
-                                                    amount: `${amount}`
+                                                    amount: `${amount}`,
+                                                    type: `${type}`
                                                 })}}
             title={title}
             date={date}
@@ -166,6 +114,7 @@ const styles = StyleSheet.create({
     listStyle: {
         flex: 1,
         marginTop: 5,
+        justifyContent: 'center'
     }
 })
 

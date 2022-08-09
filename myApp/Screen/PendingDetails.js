@@ -3,9 +3,35 @@ import { View, Text, StyleSheet, StatusBar } from 'react-native'
 import React from 'react'
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable'
 import { AntDesign } from '@expo/vector-icons';
+import moment from 'moment';
+
+import {DatabaseConnection} from '../Database/DatabaseConnection'
+
+const db = DatabaseConnection.getPendingConnection()
 
 const PendingDetails = ({navigation, route}) => {
-    const {title, date, description, amount} = route.params
+    const {title, date, description, amount, type, id} = route.params
+
+
+    const addData = () => {
+        db.transaction((tx) => {
+            let date = moment().utcOffset('+06:00').format('MM-DD-YYYY hh:mm a');
+            var tit=title, des=description, am=amount, ty=type, da=date
+            tx.executeSql(
+               'INSERT INTO expenseTable (title, description, amount, type, date) VALUES (?,?,?,?,?)',
+                [tit, des, am, ty, da],
+                (tx, result) => {
+                    navigation.navigate('Pending')
+                }
+            )
+            tx.executeSql(
+                'DELETE FROM pendingTable WHERE id = ?',
+                [id]
+            )
+        })
+    }
+
+
     return (
         <View style={styles.pageStyle}>
             <View style={styles.informationStyle}>
@@ -14,7 +40,7 @@ const PendingDetails = ({navigation, route}) => {
                     <Text style={{fontSize: 12, paddingRight: 10}}>{date}</Text>
                 </View>
                 <View style={styles.titleStyle}>
-                    <Text style={{fontSize: 20}}>{title}</Text>
+                    <Text style={{fontSize: 20}}>{title} ({type})</Text>
                 </View>
                 <View style={styles.descriptionStyle}>
                     <Text style={{fontSize: 18}}>{description}</Text>
@@ -25,7 +51,8 @@ const PendingDetails = ({navigation, route}) => {
             </View>
             <Pressable 
                 style={styles.btnStyle}
-                onPress={() => {navigation.navigate('Pending')}}
+                //onPress={() => {navigation.navigate('Pending')}}
+                onPress={addData}
             >
                 <Text style={styles.btnTextStyle}>Paid</Text>
             </Pressable>

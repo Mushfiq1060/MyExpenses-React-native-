@@ -4,7 +4,7 @@ import React from 'react'
 import { AntDesign } from '@expo/vector-icons';
 
 const ExpenseDetails = ({navigation, route}) => {
-    const {title, date, description, amount} = route.params
+    const {title, date, description, amount, type} = route.params
     return (
         <View style={styles.pageStyle}>
             <View style={styles.informationStyle}>
@@ -13,7 +13,7 @@ const ExpenseDetails = ({navigation, route}) => {
                     <Text style={{fontSize: 12, paddingRight: 10}}>{date}</Text>
                 </View>
                 <View style={styles.titleStyle}>
-                    <Text style={{fontSize: 20}}>{title}</Text>
+                    <Text style={{fontSize: 20}}>{title} ({type})</Text>
                 </View>
                 <View style={styles.descriptionStyle}>
                     <Text style={{fontSize: 18}}>{description}</Text>

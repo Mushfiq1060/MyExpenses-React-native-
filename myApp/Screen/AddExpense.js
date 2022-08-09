@@ -1,16 +1,44 @@
 
 import { View, Text, StatusBar, StyleSheet, TextInput } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import RadioButtonRN from 'radio-buttons-react-native'  
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable'
 import { FontAwesome } from '@expo/vector-icons';
+import moment from 'moment';
+
+import {DatabaseConnection} from '../Database/DatabaseConnection'
+
+const db = DatabaseConnection.getPendingConnection()
 
 const AddExpense = ({navigation}) => {
 
-    const [title, setTitle] = useState('')
-    const [description, setDescription] = useState('')
-    const [amount, setAmount] = useState('')
-    const [type, setType] = useState('Recurrent')
+    const [title, setTitle] = useState("")
+    const [description, setDescription] = useState("")
+    const [amount, setAmount] = useState("")
+    const [type, setType] = useState("")
+
+
+    const addData = () => {
+        if(title.length == 0 || description.length == 0 || amount.length == 0) {
+            alert("Please Insert All Information")
+        } else {
+            db.transaction((tx) => {
+                let date = moment().utcOffset('+06:00').format('MM-DD-YYYY hh:mm a');
+                tx.executeSql(
+                   'INSERT INTO pendingTable (title, description, amount, type, date) VALUES (?,?,?,?,?)',
+                    [title, description, amount, type.label, date],
+                    (tx, result) => {
+                        //console.log(result.rowsAffected);
+                        navigation.navigate('Pending')
+                    }
+                )
+            })
+        }
+    }
+
+    useEffect(() => {
+        // CreateTable();
+    })
 
     return (
         <View style={styles.pageStyle}>
@@ -19,6 +47,7 @@ const AddExpense = ({navigation}) => {
                     <TextInput 
                         style={{fontSize: 20,}}
                         placeholder='Enter Your Title'
+                        onChangeText={(value) => setTitle(value)}
                     />
                 </View>
                 <View style={styles.descriptionStyle}>
@@ -26,6 +55,7 @@ const AddExpense = ({navigation}) => {
                         style={{fontSize: 18,}}
                         placeholder='Enter Your Description'
                         multiline
+                        onChangeText={(value) => setDescription(value)}
                     />
                 </View>
                 <View style={styles.amountStyle}>
@@ -33,6 +63,7 @@ const AddExpense = ({navigation}) => {
                         style={{fontSize: 18,}}
                         keyboardType='number-pad'
                         placeholder='Enter Your Amount'
+                        onChangeText={(value) => setAmount(value)}
                     />
                 </View>
                 <RadioButtonRN
@@ -49,7 +80,7 @@ const AddExpense = ({navigation}) => {
             </View>
             <Pressable 
                 style={styles.btnStyle}
-                onPress={() => {navigation.navigate('Pending')}}
+                onPress={addData}
             >
                 <Text style={styles.btnTextStyle}>Add Expense</Text>
             </Pressable>

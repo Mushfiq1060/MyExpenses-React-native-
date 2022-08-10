@@ -10,7 +10,7 @@ import {DatabaseConnection} from '../Database/DatabaseConnection'
 
 const db = DatabaseConnection.getPendingConnection()
 
-const AddExpense = ({navigation}) => {
+const AddExpense = ({navigation, setCount}) => {
 
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
@@ -27,6 +27,7 @@ const AddExpense = ({navigation}) => {
                    'INSERT INTO pendingTable (title, description, amount, type, date) VALUES (?,?,?,?,?)',
                     [title, description, amount, type, date],
                     (tx, result) => {
+                        setCount((count) => count + 1)
                         navigation.navigate('Pending')
                     }
                 )

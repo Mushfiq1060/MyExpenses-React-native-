@@ -9,7 +9,7 @@ import {DatabaseConnection} from '../Database/DatabaseConnection'
 
 const db = DatabaseConnection.getPendingConnection()
 
-const PendingDetails = ({navigation, route}) => {
+const PendingDetails = ({navigation, route, setCount}) => {
 
     const {title, date, description, amount, type, id} = route.params
 
@@ -26,7 +26,10 @@ const PendingDetails = ({navigation, route}) => {
             )
             tx.executeSql(
                 'DELETE FROM pendingTable WHERE id = ?',
-                [id]
+                [id],
+                (tx, result) => {
+                    setCount((count) => count+1)
+                }
             )
         })
     }

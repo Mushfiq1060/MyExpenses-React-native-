@@ -9,7 +9,7 @@ import {DatabaseConnection} from '../Database/DatabaseConnection'
 
 const db = DatabaseConnection.getPendingConnection()
 
-const Expense = ({navigation}) => {
+const Expense = ({navigation, count}) => {
 
     const [data, setData] = useState([])
     const [mainData, setMainData] = useState([])
@@ -17,6 +17,7 @@ const Expense = ({navigation}) => {
     const [isLoading, setLoading] = useState(true)
 
     useEffect(() => {
+        console.log("Main data use effect call")
         db.transaction((tx) => {
             tx.executeSql(
                 `SELECT * FROM expenseTable ORDER BY id DESC`,
@@ -43,7 +44,7 @@ const Expense = ({navigation}) => {
                 }
             )
         })
-    },[mainData])
+    },[count])
 
     const searchData = (text) => {
         setSearch(text)

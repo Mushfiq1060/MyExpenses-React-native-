@@ -1,6 +1,6 @@
 
 import { View, Text, StatusBar } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -14,7 +14,7 @@ import ExpenseDetails from '../Screen/ExpenseDetails'
 const Tab = createMaterialTopTabNavigator()
 const Stack = createNativeStackNavigator()
 
-const TabStack = () => {
+const TabStack = ({count}) => {
     return (
         <Tab.Navigator 
             style={{paddingTop: StatusBar.currentHeight}}
@@ -22,27 +22,37 @@ const TabStack = () => {
                 tabBarStyle: {backgroundColor: 'transparent', elevation: 0}
             }}
         >
-
-            <Tab.Screen name='Pending Expense' component={Pending}/>
-            <Tab.Screen name='List Of Expense' component={Expense}/>
-
+            <Tab.Screen name='Pending Expense'>
+                {(props) => <Pending {...props} count={count} />}
+            </Tab.Screen>
+            <Tab.Screen name='List Of Expense'>
+                {(props) => <Expense {...props} count={count} />}
+            </Tab.Screen>
         </Tab.Navigator>
     )
 }
 
 const AppNavigator = () => {
+    const [count, setCount] = useState(0)
     return (
         <Stack.Navigator>
-            <Stack.Screen 
+            <Stack.Screen  
                 options={{
                     headerShown: false
                 }}
                 name='Pending' 
-                component={TabStack}
-            />
-            <Stack.Screen name='Add Expense' component={AddExpense} />
-            <Stack.Screen name='Pending Details' component={PendingDetails} />
-            <Stack.Screen name='Expense Details' component={ExpenseDetails} />
+            >
+                {(props) => <TabStack {...props} count={count} />}  
+            </Stack.Screen>
+            <Stack.Screen name='Add Expense'>
+                {(props) => <AddExpense {...props} setCount={setCount} />}
+            </Stack.Screen>
+            <Stack.Screen name='Pending Details'>
+                {(props) => <PendingDetails {...props} setCount={setCount} />}
+            </Stack.Screen>
+            <Stack.Screen name='Expense Details'>
+                {(props) => <ExpenseDetails {...props} />}
+            </Stack.Screen>
         </Stack.Navigator>
     )
 }

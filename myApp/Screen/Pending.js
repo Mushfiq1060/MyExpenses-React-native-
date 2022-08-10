@@ -33,7 +33,7 @@ function CreateTable() {
     })
 }
 
-const Pending = ({navigation}) => {
+const Pending = ({navigation, count}) => {
     
     const [data, setData] = useState([])
     const [isLoading, setLoading] = useState(true)
@@ -42,6 +42,7 @@ const Pending = ({navigation}) => {
         CreateTable()
         //DeleteTable()
         db.transaction((tx) => {
+            console.log("Data use effect call")
             tx.executeSql(
                 `SELECT * FROM pendingTable ORDER BY id DESC`,
                 [],
@@ -68,7 +69,7 @@ const Pending = ({navigation}) => {
                 }
             )
         })
-    },[data])
+    },[count])
 
     return (
         <View style={styles.pageStyle}>

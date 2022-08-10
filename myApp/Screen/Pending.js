@@ -7,7 +7,6 @@ import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 import Card from './Card';
 import {DatabaseConnection} from '../Database/DatabaseConnection'
 
-
 const db = DatabaseConnection.getPendingConnection()
 
 function DeleteTable() {
@@ -41,10 +40,10 @@ const Pending = ({navigation}) => {
     
     useEffect(() => {
         CreateTable()
-        // DeleteTable()
+        //DeleteTable()
         db.transaction((tx) => {
             tx.executeSql(
-                `SELECT * FROM pendingTable`,
+                `SELECT * FROM pendingTable ORDER BY id DESC`,
                 [],
                 (tx, result) => {
                     var temp = []
@@ -74,7 +73,7 @@ const Pending = ({navigation}) => {
     return (
         <View style={styles.pageStyle}>
             <View style={{marginTop: 5}}>
-                {isLoading ? <ActivityIndicator size='large' /> : (
+                {isLoading ? <Text>No Pending Avaiable</Text> : (
                     <FlatList 
                         keyExtractor={item => item.id}
                         showsVerticalScrollIndicator={false}

@@ -12,17 +12,18 @@ const db = DatabaseConnection.getPendingConnection()
 const Expense = ({navigation}) => {
 
     const [data, setData] = useState([])
+    const [mainData, setMainData] = useState([])
+    const [search, setSearch] = useState('')
     const [isLoading, setLoading] = useState(true)
 
     useEffect(() => {
         db.transaction((tx) => {
             tx.executeSql(
-                `SELECT * FROM expenseTable`,
+                `SELECT * FROM expenseTable ORDER BY id DESC`,
                 [],
                 (tx, result) => {
                     var temp = []
                     for(let i = 0; i < result.rows.length; i++) {
-
                         let obj={
                             id: result.rows.item(i).id,
                             title: result.rows.item(i).title,
@@ -33,7 +34,7 @@ const Expense = ({navigation}) => {
                         }
                         temp.push(obj)
                     }
-                    setData(temp)
+                    setMainData(temp)
                     if(result.rows.length > 0) {
                         setLoading(false)
                     } else {
@@ -42,7 +43,21 @@ const Expense = ({navigation}) => {
                 }
             )
         })
-    },[data])
+    },[mainData])
+
+    const searchData = (text) => {
+        setSearch(text)
+        if(text.length > 0) {
+            const newData = mainData.filter((item) => {
+                const itemData = item.title.toUpperCase()
+                const textData = text.toUpperCase()
+                return itemData.indexOf(textData) == 0
+            })
+            setData(newData)
+        } else {
+            setData(mainData)
+        }
+    }
 
     return (
         <View style={styles.pageStyle}>
@@ -51,14 +66,16 @@ const Expense = ({navigation}) => {
                 <TextInput 
                     style={{padding: 5, paddingLeft: 10, fontSize: 18}}
                     placeholder='Search Here...'
+                    value={search}
+                    onChangeText={(text) => searchData(text)}
                 />
             </View>
             <View style={styles.listStyle}>
-                {isLoading ? <ActivityIndicator size='large' /> : (
+                {isLoading ? <Text>No Expense Available</Text> : (
                     <FlatList 
                         keyExtractor={item => item.id}
                         showsVerticalScrollIndicator={false}
-                        data={data}
+                        data={search.length == 0 ? mainData : data}
                         renderItem={({item}) => 
                                     <ListItem 
                                         navigation={navigation} 

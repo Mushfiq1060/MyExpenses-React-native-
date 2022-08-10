@@ -17,7 +17,6 @@ const AddExpense = ({navigation}) => {
     const [amount, setAmount] = useState("")
     const [type, setType] = useState("")
 
-
     const addData = () => {
         if(title.length == 0 || description.length == 0 || amount.length == 0) {
             alert("Please Insert All Information")
@@ -26,19 +25,14 @@ const AddExpense = ({navigation}) => {
                 let date = moment().utcOffset('+06:00').format('MM-DD-YYYY hh:mm a');
                 tx.executeSql(
                    'INSERT INTO pendingTable (title, description, amount, type, date) VALUES (?,?,?,?,?)',
-                    [title, description, amount, type.label, date],
+                    [title, description, amount, type, date],
                     (tx, result) => {
-                        //console.log(result.rowsAffected);
                         navigation.navigate('Pending')
                     }
                 )
             })
         }
     }
-
-    useEffect(() => {
-        // CreateTable();
-    })
 
     return (
         <View style={styles.pageStyle}>
@@ -72,7 +66,7 @@ const AddExpense = ({navigation}) => {
                     activeColor='#000'
                     data={[{label: 'Recurrent'},{label: 'Random'}]}
                     initial={1}
-                    selectedBtn={(e) => setType(e)}
+                    selectedBtn={(e) => setType(e.label)}
                     icon={
                         <FontAwesome name="check-circle-o" size={24} color="tomato" />
                     }

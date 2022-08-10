@@ -10,8 +10,8 @@ import {DatabaseConnection} from '../Database/DatabaseConnection'
 const db = DatabaseConnection.getPendingConnection()
 
 const PendingDetails = ({navigation, route}) => {
-    const {title, date, description, amount, type, id} = route.params
 
+    const {title, date, description, amount, type, id} = route.params
 
     const addData = () => {
         db.transaction((tx) => {
@@ -30,7 +30,6 @@ const PendingDetails = ({navigation, route}) => {
             )
         })
     }
-
 
     return (
         <View style={styles.pageStyle}>

@@ -22,13 +22,39 @@ const AddExpense = ({navigation, setCount}) => {
             alert("Please Insert All Information")
         } else {
             db.transaction((tx) => {
-                let date = moment().utcOffset('+06:00').format('MM-DD-YYYY hh:mm a');
                 tx.executeSql(
-                   'INSERT INTO pendingTable (title, description, amount, type, date) VALUES (?,?,?,?,?)',
-                    [title, description, amount, type, date],
+                    'SELECT * FROM pendingTable WHERE title = ?',
+                    [title],
                     (tx, result) => {
-                        setCount((count) => count + 1)
-                        navigation.navigate('Pending')
+                        if(result.rows.length == 0) {
+                            tx.executeSql(
+                                'SELECT * FROM expenseTable WHERE title = ?',
+                                [title],
+                                (tx1, result1) => {
+                                    if(result1.rows.length == 0) {
+                                        let date = moment().utcOffset('+06:00').format('MM-DD-YYYY hh:mm a')
+                                        if(type == "Recurrent") {
+                                            tx.executeSql(
+                                                'INSERT INTO recurrentTable (title, description, amount, type, date) VALUES (?,?,?,?,?)',
+                                                [title, description, amount, type, date],
+                                            )
+                                        }
+                                        tx.executeSql(
+                                            'INSERT INTO pendingTable (title, description, amount, type, date) VALUES (?,?,?,?,?)',
+                                            [title, description, amount, type, date],
+                                            (tx, result) => {
+                                                setCount((count) => count + 1)
+                                                navigation.navigate('Pending')
+                                            }
+                                        )
+                                    } else {
+                                        alert("This title already added")
+                                    }
+                                }
+                            )
+                        } else {
+                            alert("This title already added")
+                        }
                     }
                 )
             })

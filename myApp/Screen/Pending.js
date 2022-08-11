@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, ActivityIndicator, FlatList } from 'react-nativ
 import React, { useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
+import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Card from './Card';
 import {DatabaseConnection} from '../Database/DatabaseConnection'
@@ -17,6 +19,9 @@ function DeleteTable() {
         tx.executeSql(
             `DROP TABLE IF EXISTS expenseTable`, []
         )
+        tx.executeSql(
+            `DROP TABLE IF EXISTS recurrentTable`, []
+        )
     })
 }
 
@@ -30,6 +35,41 @@ function CreateTable() {
             `CREATE TABLE IF NOT EXISTS expenseTable (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, 
                 amount TEXT, type TEXT, date TEXT)`,
         )
+        tx.executeSql(
+            `CREATE TABLE IF NOT EXISTS recurrentTable (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, 
+                amount TEXT, type TEXT, date TEXT)`,
+        )
+    })
+}
+
+function FetchData({setData, setLoading}) {
+    db.transaction((tx) => {
+        console.log("Data use effect call")
+        tx.executeSql(
+            `SELECT * FROM pendingTable ORDER BY id DESC`,
+            [],
+            (tx, result) => {
+                var temp = []
+                for(let i = 0; i < result.rows.length; i++) {
+
+                    let obj={
+                        id: result.rows.item(i).id,
+                        title: result.rows.item(i).title,
+                        description: result.rows.item(i).description,
+                        amount: result.rows.item(i).amount,
+                        type: result.rows.item(i).type,
+                        date: result.rows.item(i).date
+                    }
+                    temp.push(obj)
+                }
+                setData(temp)
+                if(result.rows.length > 0) {
+                    setLoading(false)
+                } else {
+                    setLoading(true)
+                }
+            }
+        )
     })
 }
 
@@ -37,19 +77,17 @@ const Pending = ({navigation, count}) => {
     
     const [data, setData] = useState([])
     const [isLoading, setLoading] = useState(true)
-    
-    useEffect(() => {
-        CreateTable()
-        //DeleteTable()
+    const [anotherFetch, setAnotherFetch] = useState(true)
+
+    const GetAsyncData = async () => {
+        let value = await AsyncStorage.getItem('lastTime')
         db.transaction((tx) => {
-            console.log("Data use effect call")
             tx.executeSql(
-                `SELECT * FROM pendingTable ORDER BY id DESC`,
+                'SELECT * FROM recurrentTable',
                 [],
                 (tx, result) => {
                     var temp = []
                     for(let i = 0; i < result.rows.length; i++) {
-
                         let obj={
                             id: result.rows.item(i).id,
                             title: result.rows.item(i).title,
@@ -60,16 +98,55 @@ const Pending = ({navigation, count}) => {
                         }
                         temp.push(obj)
                     }
-                    setData(temp)
-                    if(result.rows.length > 0) {
-                        setLoading(false)
-                    } else {
-                        setLoading(true)
+                    var arr = []
+                    for(let i = 0; i < temp.length; i++) {
+                        let currentTime = moment().utcOffset('+06:00').format('MM-YYYY')
+                        let lastTime = value
+                        let insertTime = moment().utcOffset('+06:00').format('MM-DD-YYYY hh:mm a');
+                        while(moment(lastTime,'MM-YYYY').isBefore(moment(currentTime,'MM-YYYY'))) {
+                            lastTime = moment(lastTime, 'MM-YYYY').add(1, 'month').format('MM-YYYY')
+                            arr.push({
+                                id: temp[i].id,
+                                title: temp[i].title,
+                                description: temp[i].description,
+                                amount: temp[i].amount,
+                                type: temp[i].amount,
+                                date: insertTime
+                            })
+                            insertTime = moment(insertTime,'MM-DD-YYYY hh:mm a').add(-1,'month').format('MM-DD-YYYY hh:mm a')
+                        }
                     }
+                    //console.log(arr)
+                    for(let i = 0; i < arr.length; i++) {
+                        db.transaction((tx) => {
+                            tx.executeSql(
+                                'INSERT INTO pendingTable (title, description, amount, type, date) VALUES (?,?,?,?,?)',
+                                [arr[i].title, arr[i].description, arr[i].amount, arr[i].type, arr[i].date],
+                            )
+                        })
+                    }
+                    setAnotherFetch(false)
                 }
             )
         })
-    },[count])
+    }
+
+    const SetAsyncData = async () => {
+        const date = moment().format('MM-YYYY')
+        await AsyncStorage.setItem('lastTime', date)
+    }
+
+    useEffect(() => {
+        CreateTable()
+        //DeleteTable()
+        FetchData({setData, setLoading})
+    },[count, anotherFetch])
+
+
+    useEffect(() => {
+        GetAsyncData()
+        SetAsyncData()
+    },[])
 
     return (
         <View style={styles.pageStyle}>

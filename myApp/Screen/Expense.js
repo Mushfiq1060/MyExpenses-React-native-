@@ -17,7 +17,7 @@ const Expense = ({navigation, count}) => {
     const [isLoading, setLoading] = useState(true)
 
     useEffect(() => {
-        console.log("Main data use effect call")
+        //console.log("Main data use effect call")
         db.transaction((tx) => {
             tx.executeSql(
                 `SELECT * FROM expenseTable ORDER BY id DESC`,

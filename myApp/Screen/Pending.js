@@ -44,7 +44,7 @@ function CreateTable() {
 
 function FetchData({setData, setLoading}) {
     db.transaction((tx) => {
-        console.log("Data use effect call")
+        //console.log("Data use effect call")
         tx.executeSql(
             `SELECT * FROM pendingTable ORDER BY id DESC`,
             [],
@@ -117,7 +117,7 @@ const Pending = ({navigation, count}) => {
                         }
                     }
                     //console.log(arr)
-                    for(let i = 0; i < arr.length; i++) {
+                    for(let i = arr.length - 1; i >= 0; i--) {
                         db.transaction((tx) => {
                             tx.executeSql(
                                 'INSERT INTO pendingTable (title, description, amount, type, date) VALUES (?,?,?,?,?)',

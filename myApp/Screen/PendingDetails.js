@@ -16,10 +16,9 @@ const PendingDetails = ({navigation, route, setCount}) => {
     const addData = () => {
         db.transaction((tx) => {
             let date = moment().utcOffset('+06:00').format('MM-DD-YYYY hh:mm a');
-            var tit=title, des=description, am=amount, ty=type, da=date
             tx.executeSql(
                'INSERT INTO expenseTable (title, description, amount, type, date) VALUES (?,?,?,?,?)',
-                [tit, des, am, ty, da],
+                [title, description, amount, type, date],
                 (tx, result) => {
                     navigation.navigate('Pending')
                 }
